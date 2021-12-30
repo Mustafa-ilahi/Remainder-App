@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1012445821514",
+    "project_id": "remainder-app-2862a",
+    "storage_bucket": "remainder-app-2862a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1012445821514:android:1032300ef418f9dd0ac4b3",
+        "android_client_info": {
+          "package_name": "com.taskmonitoring"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1012445821514-kutv3gfii7qn0b0hnk4lvkg4qfgo8bil.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDvdpcwHdNhBWkeWmpqxjK3mvTBOe7yqs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1012445821514-kutv3gfii7qn0b0hnk4lvkg4qfgo8bil.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
