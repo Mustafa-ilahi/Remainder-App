@@ -36,8 +36,8 @@ export default function SignIn({navigation}) {
               .get()
               .then(snapshot => {
                 snapshot.forEach(item => {
-                  dispatch(storeData(item.data().email,item.data().userName));
-                  navigation.navigate("Dashboard")
+                  dispatch(storeData(item.data().email, item.data().userName));
+                  navigation.navigate('Dashboard');
                 });
               });
           })
@@ -62,7 +62,7 @@ export default function SignIn({navigation}) {
       <View style={styles.container}>
         <Image
           source={require('../../assets/signup.jpeg')}
-          style={{height: 260, width: '100%', paddingTop: 0, marginTop: 0}}
+          style={styles.header}
         />
         <View style={styles.welcomeBackView}>
           <Text style={styles.welcomeBack}>Welcome Back</Text>
@@ -87,17 +87,7 @@ export default function SignIn({navigation}) {
           />
         </View>
         <View style={{marginTop: 10}}>
-          {error !== '' && (
-            <Text
-              style={{
-                color: 'red',
-                fontSize: 12,
-                textAlign: 'left',
-                paddingLeft: 5,
-              }}>
-              {error}
-            </Text>
-          )}
+          {error !== '' && <Text style={styles.errorText}>{error}</Text>}
         </View>
         <View style={styles.btnView}>
           <View style={styles.button}>
@@ -132,6 +122,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     // flex: 1,
   },
+  header: {height: 260, width: '100%', paddingTop: 0, marginTop: 0},
   welcomeBackView: {alignSelf: 'flex-start', padding: 10},
   welcomeBack: {
     fontSize: 45,
@@ -165,6 +156,12 @@ const styles = StyleSheet.create({
   forgotPassword: {
     alignSelf: 'flex-end',
     paddingTop: 10,
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 12,
+    textAlign: 'left',
+    paddingLeft: 5,
   },
   btnView: {paddingTop: 15},
   button: {

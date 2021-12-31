@@ -1,16 +1,21 @@
 import React, {useEffect, useState} from 'react';
-import {View, StatusBar, StyleSheet, TouchableOpacity, Dimensions} from 'react-native';
+import {
+  View,
+  StatusBar,
+  StyleSheet,
+  TouchableOpacity,
+  Dimensions,
+} from 'react-native';
 import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
 import {Avatar, Title, Text, Switch, Drawer, Button} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-
 import {removeData} from '../../store/action';
 import {useDispatch} from 'react-redux';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 export default function DrawerContent(props) {
   const dispatch = useDispatch();
-  const userName = useSelector(state => state.name)
+  const userName = useSelector(state => state.name);
   const signOut = () => {
     dispatch(removeData());
     setTimeout(() => {
@@ -22,26 +27,24 @@ export default function DrawerContent(props) {
     props.navigation.navigate('Dashboard');
   };
   return (
-    <View style={{flex: 1}}>
+    <View style={styles.mainView}>
       <DrawerContentScrollView {...props}>
-        <View style={{flex: 1}}>
+        <View style={styles.mainView}>
           <StatusBar animated="auto" />
-          <Drawer.Section style={{marginTop: -5, backgroundColor: '#122e6e',justifyContent:"center"}}>
-            <View style={{paddingLeft: Dimensions.get("window").height * 0.05,paddingTop:Dimensions.get("window").height * 0.05, marginBottom: Dimensions.get("window").height * 0.09}}>
-              <View style={{flexDirection: 'row', marginTop: 15,alignItems:"center"}}>
+          <Drawer.Section style={styles.drawerSection}>
+            <View style={styles.drawerMainView}>
+              <View style={styles.drawerView}>
                 <Avatar.Image
                   source={require('../../assets/user2.png')}
                   size={70}
                 />
-                <View style={{marginLeft: 15}}>
-                  <Title style={{fontSize: 17, marginTop: 15, color: 'white'}}>
-                    {userName}
-                  </Title>
+                <View style={styles.titleView}>
+                  <Title style={styles.title}>{userName}</Title>
                 </View>
               </View>
             </View>
           </Drawer.Section>
-          <Drawer.Section style={{marginTop: 15}}>
+          <Drawer.Section style={styles.secondSection}>
             <DrawerItem
               icon={({color, size}) => (
                 <Icon name="home-outline" color={color} size={size} />
@@ -49,25 +52,6 @@ export default function DrawerContent(props) {
               label="Dashboard"
               onPress={DrawerScreenDecider}
             />
-            {/* <DrawerItem
-                  icon={({color, size}) => (
-                    <Icon3 name="user" color={color} size={size} />
-                  )}
-                  label="Profile"
-                  onPress={() => {
-                    props.navigation.navigate('Student Profile');
-                  }}
-                />
-                <DrawerItem
-                  icon={({color, size}) => (
-                    <Icon2 name="pencil-square-o" color={color} size={size} />
-                  )}
-                  label="Create Profile"
-                  onPress={() => {
-                    props.navigation.navigate('Create Profile');
-                  }}
-                />
-            )} */}
 
             <DrawerItem
               icon={({color, size}) => (
@@ -83,6 +67,26 @@ export default function DrawerContent(props) {
   );
 }
 const styles = StyleSheet.create({
+  mainView: {flex: 1},
+  drawerSection: {
+    marginTop: -5,
+    backgroundColor: '#122e6e',
+    justifyContent: 'center',
+  },
+  drawerMainView: {
+    paddingLeft: Dimensions.get('window').height * 0.05,
+    paddingTop: Dimensions.get('window').height * 0.05,
+    marginBottom: Dimensions.get('window').height * 0.09,
+  },
+  drawerView: {
+    flexDirection: 'row',
+    marginTop: 15,
+    alignItems: 'center',
+  },
+  titleView: {marginLeft: 15},
+  title: {fontSize: 17, marginTop: 15, color: 'white'},
+  secondSection: {marginTop: 15},
+
   signOut: {
     backgroundColor: '#1A202E',
     width: 120,

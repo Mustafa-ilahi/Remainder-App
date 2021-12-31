@@ -69,7 +69,7 @@ export default function SignUp({navigation}) {
       <View style={styles.container}>
         <Image
           source={require('../../assets/signup.jpeg')}
-          style={{height: 220, width: '100%', paddingTop: 0, marginTop: 0}}
+          style={styles.header}
         />
 
         <View style={styles.signUpView}>
@@ -106,13 +106,7 @@ export default function SignUp({navigation}) {
         <View style={{marginBottom: 5}}>
           {error !== '' && (
             <Text
-              style={{
-                color: 'red',
-                fontSize: 12,
-                textAlign: 'left',
-                paddingLeft: 5,
-                paddingTop: 5,
-              }}>
+              style={styles.errorText}>
               {error}
             </Text>
           )}
@@ -154,6 +148,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     // flex: 1,
   },
+  header:{height: 220, width: '100%', paddingTop: 0, marginTop: 0},
   signUpView: {alignSelf: 'flex-start', padding: 10},
   welcomeBack: {
     fontSize: 45,
@@ -195,6 +190,13 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 8,
     borderBottomLeftRadius: 8,
     paddingLeft: 10,
+  },
+  errorText:{
+    color: 'red',
+    fontSize: 12,
+    textAlign: 'left',
+    paddingLeft: 5,
+    paddingTop: 5,
   },
   createAccountBtn: {
     backgroundColor: '#122e6e',
