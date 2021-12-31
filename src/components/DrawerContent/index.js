@@ -24,7 +24,7 @@ export default function DrawerContent(props) {
   };
 
   const DrawerScreenDecider = () => {
-    props.navigation.navigate('Dashboard');
+    props.navigation.navigate('Alarm Details');
   };
   return (
     <View style={styles.mainView}>

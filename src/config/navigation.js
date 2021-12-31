@@ -9,6 +9,7 @@ import SignIn from '../components/SignIn';
 import Dashboard from '../components/Dashboard';
 import {useSelector} from 'react-redux';
 import DrawerContent from '../components/DrawerContent';
+import TimePicker from '../components/TimePicker';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -21,8 +22,9 @@ export default function MainNavigator() {
       <Stack.Navigator screenOptions={{headerShown: false}}>
         {isSignedIn ? (
           <>
-            {/* <Stack.Screen name="Dashboard" component={Dashboard} /> */}
             <Stack.Screen name="userDrawer" component={userDrawer} />
+            <Stack.Screen name="TimePicker" component={TimePicker} />
+
           </>
         ) : (
           <Stack.Screen name="Auth" component={AuthNavigator} />
@@ -45,7 +47,7 @@ function AuthNavigator() {
 function userDrawer() {
   return (
     <Drawer.Navigator drawerContent={props => <DrawerContent {...props} />} >
-      <Drawer.Screen name="Dashboard" component={Dashboard} options={{headerTitleStyle:{color:"#122e6e"},headerTintColor:"#122e6e"}} />
+      <Drawer.Screen name="Alarm Details" component={Dashboard} options={{headerTitleStyle:{color:"#122e6e"},headerTintColor:"#122e6e"}} />
  
     </Drawer.Navigator>
   );
