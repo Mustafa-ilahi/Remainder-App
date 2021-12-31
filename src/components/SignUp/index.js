@@ -37,7 +37,7 @@ export default function SignUp({navigation}) {
         const signUp = await auth()
           .createUserWithEmailAndPassword(email, password)
           .then(() => {
-            dispatch(storeData(email));
+            dispatch(storeData(email,userName));
             firestore()
               .collection('Users')
               .add({

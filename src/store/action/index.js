@@ -1,7 +1,7 @@
-function storeData(email) {
+function storeData(email,name) {
   return {
     type: 'ADD_DATA',
-
+    name: name,
     email: email,
   };
 }

@@ -36,7 +36,7 @@ export default function SignIn({navigation}) {
               .get()
               .then(snapshot => {
                 snapshot.forEach(item => {
-                  dispatch(storeData(item.data().email));
+                  dispatch(storeData(item.data().email,item.data().userName));
                   navigation.navigate("Dashboard")
                 });
               });
