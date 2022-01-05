@@ -3,6 +3,7 @@ import {StyleSheet, Text, View, Button, Image, Dimensions} from 'react-native';
 import {TextInput} from 'react-native-paper';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import Moment from 'moment';
 
 export default function TimePicker() {
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
@@ -18,19 +19,23 @@ export default function TimePicker() {
     //   alert('Please choose future time');
     //   return;
     // }
-    console.log(dateTime);
-    hideDatePicker();
+    // console.log(dateTime);
+    Moment.locale('en');
+    const time = Moment(dateTime).format('hh:mm A');
+    const date = Moment(dateTime).format('d/m/YY');
+    console.log(time);
+    console.log(date);
+    // hideDatePicker();
   };
   return (
     <View style={styles.container}>
-        <Image
+      <Image
         source={require('../../assets/alarm.gif')}
         style={{height: 200, width: 270}}
       />
       <View style={styles.welcomeBackView}>
         <Text style={styles.welcomeBack}>Alarm Details</Text>
       </View>
-   
 
       <View style={styles.form}>
         <TextInput
@@ -85,7 +90,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#122e6e',
     paddingLeft: 7,
-    paddingTop:Dimensions.get("window").height * 0.05
+    paddingTop: Dimensions.get('window').height * 0.05,
   },
   form: {
     width: '95%',
@@ -94,7 +99,7 @@ const styles = StyleSheet.create({
   },
   title: {
     // marginBottom: 10,
-      
+
     borderTopRadius: 12,
     borderBottomRightRadius: 8,
     borderBottomLeftRadius: 8,
