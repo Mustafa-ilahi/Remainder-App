@@ -68,7 +68,7 @@ export default function SignUp({navigation}) {
     <ScrollView>
       <View style={styles.container}>
         <Image
-          source={require('../../assets/signup.jpeg')}
+          source={require('../../assets/signup.png')}
           style={styles.header}
         />
 

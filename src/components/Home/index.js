@@ -5,7 +5,7 @@ export default function Home({navigation}) {
   return (
     <View style={styles.container}>
       <Image
-        source={require('../../assets/signup.jpeg')}
+        source={require('../../assets/signup.png')}
         style={{height: 220, width: "100%",paddingTop:0,marginTop:0}}
       />
       <Text style={styles.welcomeHeading}>ᴛᴀꜱᴋ ᴍᴏɴɪᴛᴏʀɪɴɢ</Text>
