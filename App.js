@@ -14,6 +14,7 @@ export default function App() {
         </View>
       </PersistGate>
     </Provider>
+   
   );
 }
 const styles = StyleSheet.create({

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Button,
   Dimensions,
@@ -11,12 +11,27 @@ import {
 import {useSelector} from 'react-redux';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {ListItem} from 'react-native-elements';
+import firestore from '@react-native-firebase/firestore';
+
 export default function Dashboard({navigation}) {
   const email = useSelector(state => state.email);
   const [alarm, setAlarm] = useState('');
+  useEffect(() => {
+    let temp = [];
+    firestore()
+      .collection('Alarms')
+      .where('email', '==', email)
+      .get()
+      .then(snapshot => {
+        snapshot.docs.forEach(item => {
+          temp.push(item.data());
+        });
+        setAlarm(temp);
+      });
+  }, []);
   return (
     <View>
-      {alarm == 'a' ? (
+      {alarm == '' ? (
         <>
           <View>
             <Image
@@ -35,18 +50,26 @@ export default function Dashboard({navigation}) {
         <>
           <View>
             <View style={styles.listView}>
-              <ListItem>
-                <ListItem.Content>
-                  <ListItem.Title style={styles.title}>
-                    Drink water
-                  </ListItem.Title>
-                  <ListItem.Subtitle style={styles.time}>
-                    7:44
-                  </ListItem.Subtitle>
-                  <ListItem.Subtitle>31/12/2021</ListItem.Subtitle>
-                </ListItem.Content>
-                <Button title="Remove" color={'red'} />
-              </ListItem>
+              {alarm.map(item => {
+                return (
+                  <ListItem>
+                    <ListItem.Content>
+                      <ListItem.Title style={styles.title}>
+                        {item.title}
+                      </ListItem.Title>
+                      <ListItem.Subtitle style={styles.time}>
+                        {item.time}
+                      </ListItem.Subtitle>
+
+                      <ListItem.Subtitle>{item.date}</ListItem.Subtitle>
+                      <ListItem.Subtitle style={styles.message}>
+                        {item.message}
+                      </ListItem.Subtitle>
+                    </ListItem.Content>
+                    <Button title="Remove" color={'red'} />
+                  </ListItem>
+                );
+              })}
             </View>
             <View style={styles.addIconData}>
               <TouchableOpacity
@@ -91,7 +114,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     elevation: 10,
     borderRadius: 20,
-    borderWidth:5,
+    borderWidth: 5,
     width: Dimensions.get('window').width * 0.9,
     alignSelf: 'center',
     marginTop: Dimensions.get('window').height * 0.02,
@@ -99,9 +122,14 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: 'bold',
     fontSize: 30,
+    paddingBottom: Dimensions.get('window').height * 0.005,
   },
   time: {
     fontSize: 20,
     fontWeight: 'bold',
+    paddingBottom: Dimensions.get('window').height * 0.005,
+  },
+  message: {
+    paddingTop: Dimensions.get('window').height * 0.009,
   },
 });
