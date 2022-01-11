@@ -7,8 +7,18 @@ import Moment from 'moment';
 
 export default function TimePicker() {
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [error, setError] = useState('');
   const showDateTimePicker = () => {
-    setIsDatePickerVisible(true);
+    if (title !== '' && description !== '') {
+      setIsDatePickerVisible(true);
+      setError('')
+    } else if (title == '') {
+      setError('Title is required');
+    } else if (description == '') {
+      setError('Description is required');
+    }
   };
   const hideDatePicker = () => {
     setIsDatePickerVisible(false);
@@ -41,19 +51,22 @@ export default function TimePicker() {
         <TextInput
           label="Alarm Title"
           activeUnderlineColor="#000"
-          // onChangeText={text => setEmail(text)}
-          // value={email}
+          onChangeText={text => setTitle(text)}
+          value={title}
           style={styles.title}
           underlineColor="transparent"
         />
         <TextInput
           label="Alarm Description"
           activeUnderlineColor="#000"
-          // onChangeText={text => setEmail(text)}
-          // value={email}
+          onChangeText={text => setDescription(text)}
+          value={description}
           style={styles.description}
           underlineColor="transparent"
         />
+      </View>
+      <View>
+        {error !== '' && <Text style={styles.errorText}>{error}</Text>}
       </View>
       <View style={styles.addAlarm}>
         <Button
@@ -74,15 +87,12 @@ export default function TimePicker() {
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
     justifyContent: 'center',
     flex: 1,
   },
   image: {
     height: Dimensions.get('window').height * 0.3,
     width: Dimensions.get('window').width * 0.4,
-    // marginTop: Dimensions.get('window').height * 0.2,
-    // alignSelf: 'center',
   },
   welcomeBackView: {alignSelf: 'flex-start', padding: 10},
   welcomeBack: {
@@ -98,8 +108,6 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
   },
   title: {
-    // marginBottom: 10,
-
     borderTopRadius: 12,
     borderBottomRightRadius: 8,
     borderBottomLeftRadius: 8,
@@ -112,5 +120,13 @@ const styles = StyleSheet.create({
   },
   addAlarm: {
     marginTop: 20,
+    width: Dimensions.get('window').width * 0.5,
+    alignSelf: 'center',
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 16,
+    paddingLeft: Dimensions.get('window').width * 0.06,
+    paddingTop: 5,
   },
 });

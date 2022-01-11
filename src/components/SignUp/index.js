@@ -99,6 +99,7 @@ export default function SignUp({navigation}) {
             value={password}
             activeUnderlineColor="#000"
             label="Password"
+            secureTextEntry={true}
             style={styles.password}
             underlineColor="transparent"
           />

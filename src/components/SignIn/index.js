@@ -83,6 +83,7 @@ export default function SignIn({navigation}) {
             activeUnderlineColor="#000"
             label="Password"
             style={styles.password}
+            secureTextEntry={true}
             underlineColor="transparent"
           />
         </View>
