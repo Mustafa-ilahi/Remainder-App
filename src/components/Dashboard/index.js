@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {
+  AppState,
   Button,
   Dimensions,
   Image,
@@ -12,11 +13,27 @@ import {useSelector} from 'react-redux';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {ListItem} from 'react-native-elements';
 import firestore from '@react-native-firebase/firestore';
+import {Divider} from 'react-native-paper';
+import Moment from 'moment';
+import ReactNativeAN from 'react-native-alarm-notification';
 
 export default function Dashboard({navigation}) {
   const email = useSelector(state => state.email);
   const [alarm, setAlarm] = useState('');
+  const [alarmStatus, setalarmStatus] = useState(false);
+  const [aState, setAppState] = useState(AppState.currentState);
+
   useEffect(() => {
+    const appStateListener = AppState.addEventListener(
+      'change',
+      nextAppState => {
+        console.log('Next AppState is: ', nextAppState);
+        setAppState(nextAppState);
+      },
+    );
+    // return () => {
+    //   appStateListener?.remove();
+
     let temp = [];
     firestore()
       .collection('Alarms')
@@ -25,6 +42,15 @@ export default function Dashboard({navigation}) {
       .then(snapshot => {
         snapshot.docs.forEach(item => {
           temp.push(item.data());
+          let fireDate = item.data().fire_date;
+          let duration = Moment.duration(Moment().diff(fireDate));
+          let seconds = duration.asMinutes();
+          let res = Math.floor(seconds / 60000);
+          console.log(res);
+          setTimeout(() => {
+            ReactNativeAN.sendNotification(item.data());
+            setalarmStatus(true);
+          }, res);
         });
         setAlarm(temp);
       });
@@ -52,22 +78,25 @@ export default function Dashboard({navigation}) {
             <View style={styles.listView}>
               {alarm.map(item => {
                 return (
-                  <ListItem>
-                    <ListItem.Content>
-                      <ListItem.Title style={styles.title}>
-                        {item.title}
-                      </ListItem.Title>
-                      <ListItem.Subtitle style={styles.time}>
-                        {item.time}
-                      </ListItem.Subtitle>
+                  <>
+                    <ListItem>
+                      <ListItem.Content>
+                        <ListItem.Title style={styles.title}>
+                          {item.title}
+                        </ListItem.Title>
+                        <ListItem.Subtitle style={styles.time}>
+                          {item.time}
+                        </ListItem.Subtitle>
 
-                      <ListItem.Subtitle>{item.date}</ListItem.Subtitle>
-                      <ListItem.Subtitle style={styles.message}>
-                        {item.message}
-                      </ListItem.Subtitle>
-                    </ListItem.Content>
-                    <Button title="Remove" color={'red'} />
-                  </ListItem>
+                        <ListItem.Subtitle>{item.date}</ListItem.Subtitle>
+                        <ListItem.Subtitle style={styles.message}>
+                          {item.message}
+                        </ListItem.Subtitle>
+                      </ListItem.Content>
+                      <Button title="Remove" color={'red'} />
+                    </ListItem>
+                    <Divider />
+                  </>
                 );
               })}
             </View>
@@ -98,8 +127,9 @@ const styles = StyleSheet.create({
   },
   addIconData: {
     alignSelf: 'flex-end',
+    position: 'absolute',
     paddingRight: Dimensions.get('window').height * 0.02,
-    marginTop: Dimensions.get('window').height * 0.6,
+    marginTop: Dimensions.get('window').height * 0.7,
   },
   image: {
     height: Dimensions.get('window').height * 0.3,

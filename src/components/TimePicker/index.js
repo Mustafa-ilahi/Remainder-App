@@ -1,12 +1,20 @@
-import React, {useState} from 'react';
-import {StyleSheet, Text, View, Button, Image, Dimensions} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Button,
+  Image,
+  Dimensions,
+  AppState,
+} from 'react-native';
 import {TextInput} from 'react-native-paper';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Moment from 'moment';
 import {useSelector} from 'react-redux';
 import firestore from '@react-native-firebase/firestore';
-
+import ReactNativeAN from 'react-native-alarm-notification';
 export default function TimePicker({navigation}) {
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
   const [title, setTitle] = useState('');
@@ -39,13 +47,12 @@ export default function TimePicker({navigation}) {
     }
     return result;
   };
-  const handleConfirm = dateTime => {
- 
+  const handleConfirm = async dateTime => {
     Moment.locale('en');
     const time = Moment(dateTime).format('hh:mm A');
     const date = Moment(dateTime).format('d/m/YY');
-    console.log(time);
-    console.log(date);
+    const fireDate = ReactNativeAN.parseDate(dateTime);
+
     const alarmNotifData = {
       id: idGenerator(),
       userName: userName,
@@ -54,8 +61,8 @@ export default function TimePicker({navigation}) {
       message: description,
       ticker: description,
       auto_cancel: true,
-      vibrate: true,
-      vibration: 100,
+      // vibrate: true,
+      // vibration: 100,
       small_icon: 'ic_launcher',
       large_icon: 'ic_launcher',
       play_sound: true,
@@ -63,10 +70,19 @@ export default function TimePicker({navigation}) {
       color: 'red',
       schedule_once: true,
       tag: 'some_tag',
-      fire_date: Date.now(),
+      fire_date: fireDate,
       date: date,
       time: time,
     };
+    // ReactNativeAN.scheduleAlarm(alarmNotifData)
+  
+    // ReactNativeAN.stopAlarmSound();
+    // const alarm = await ReactNativeAN.scheduleAlarm({
+    //   ...alarmNotifData,
+    //   fire_date: fireDate,
+    // });
+    // const allAlarms = await ReactNativeAN.getScheduledAlarms();
+    // console.log(allAlarms);
     firestore()
       .collection('Alarms')
       .add(alarmNotifData)
