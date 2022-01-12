@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  Vibration,
   View,
 } from 'react-native';
 import {useSelector} from 'react-redux';
@@ -50,6 +51,7 @@ export default function Dashboard({navigation}) {
           setTimeout(() => {
             ReactNativeAN.sendNotification(item.data());
             setalarmStatus(true);
+            Vibration.cancel()
           }, res);
         });
         setAlarm(temp);
