@@ -4,6 +4,7 @@ import {
   Button,
   Dimensions,
   Image,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -25,13 +26,13 @@ export default function Dashboard({navigation}) {
   const [aState, setAppState] = useState(AppState.currentState);
 
   useEffect(() => {
-    const appStateListener = AppState.addEventListener(
-      'change',
-      nextAppState => {
-        console.log('Next AppState is: ', nextAppState);
-        setAppState(nextAppState);
-      },
-    );
+    // const appStateListener = AppState.addEventListener(
+    //   'change',
+    //   nextAppState => {
+    //     console.log('Next AppState is: ', nextAppState);
+    //     setAppState(nextAppState);
+    //   },
+    // );
     // return () => {
     //   appStateListener?.remove();
 
@@ -47,16 +48,29 @@ export default function Dashboard({navigation}) {
           let duration = Moment.duration(Moment().diff(fireDate));
           let seconds = duration.asMinutes();
           let res = Math.floor(seconds / 60000);
-          console.log(res);
+          console.log('res', res);
           setTimeout(() => {
             ReactNativeAN.sendNotification(item.data());
             setalarmStatus(true);
-            Vibration.cancel()
+            Vibration.cancel();
           }, res);
         });
+        // console.log("alarmStatus",alarmStatus);
+        // if(alarmStatus){
+        //   firestore().collection("Alarms").update({
+        //     alarmFired: true
+        //   })
+        // }
         setAlarm(temp);
       });
   }, []);
+  const removeAlarm = (item, index) => {
+    // firestore().collection("Alarm")
+    console.log(index);
+    let temp = [...alarm];
+    temp.splice(index, 1);
+    setAlarm(temp);
+  };
   return (
     <View>
       {alarm == '' ? (
@@ -75,13 +89,14 @@ export default function Dashboard({navigation}) {
           </View>
         </>
       ) : (
-        <>
+        <View>
+        <ScrollView>
           <View>
             <View style={styles.listView}>
-              {alarm.map(item => {
+              {alarm.map((item, index) => {
                 return (
                   <>
-                    <ListItem>
+                    <ListItem key={index}>
                       <ListItem.Content>
                         <ListItem.Title style={styles.title}>
                           {item.title}
@@ -95,22 +110,27 @@ export default function Dashboard({navigation}) {
                           {item.message}
                         </ListItem.Subtitle>
                       </ListItem.Content>
-                      <Button title="Remove" color={'red'} />
+                      <Button
+                        title="Remove"
+                        color={'red'}
+                        onPress={() => removeAlarm(item, index)}
+                      />
                     </ListItem>
                     <Divider />
                   </>
                 );
               })}
             </View>
-            <View style={styles.addIconData}>
-              <TouchableOpacity
-                onPress={() => navigation.navigate('TimePicker')}>
-                <Icon name="pluscircle" color={'#122e6e'} size={60} />
-              </TouchableOpacity>
-            </View>
           </View>
-        </>
+        </ScrollView>
+        <View style={styles.addIconData}>
+        <TouchableOpacity onPress={() => navigation.navigate('TimePicker')}>
+          <Icon name="pluscircle" color={'#122e6e'} size={60} />
+        </TouchableOpacity>
+      </View>
+        </View>
       )}
+      
     </View>
   );
 }
@@ -124,14 +144,14 @@ const styles = StyleSheet.create({
   },
   addIcon: {
     alignSelf: 'flex-end',
-    paddingRight: Dimensions.get('window').height * 0.05,
+    paddingRight: Dimensions.get('window').height * 0.04,
     marginTop: Dimensions.get('window').height * 0.2,
   },
   addIconData: {
     alignSelf: 'flex-end',
     position: 'absolute',
-    paddingRight: Dimensions.get('window').height * 0.02,
-    marginTop: Dimensions.get('window').height * 0.7,
+    paddingRight: Dimensions.get('window').height * 0.03,
+    marginTop: Dimensions.get('window').height * 0.82,
   },
   image: {
     height: Dimensions.get('window').height * 0.3,
@@ -150,6 +170,7 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width * 0.9,
     alignSelf: 'center',
     marginTop: Dimensions.get('window').height * 0.02,
+    marginBottom: Dimensions.get('window').height * 0.02,
   },
   title: {
     fontWeight: 'bold',
