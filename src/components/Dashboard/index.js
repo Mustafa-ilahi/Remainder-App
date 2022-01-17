@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {Fragment, useEffect, useState} from 'react';
 import {
   AppState,
   Button,
@@ -16,27 +16,78 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import {ListItem} from 'react-native-elements';
 import firestore from '@react-native-firebase/firestore';
 import {Divider} from 'react-native-paper';
-import Moment from 'moment';
 import ReactNativeAN from 'react-native-alarm-notification';
+import {useIsFocused} from '@react-navigation/native';
+import BackgroundService from 'react-native-background-actions';
 
 export default function Dashboard({navigation}) {
+  const isVisible = useIsFocused();
+  const [aState, setAppState] = useState(AppState.currentState);
+
   const email = useSelector(state => state.email);
   const [alarm, setAlarm] = useState('');
   const [alarmStatus, setalarmStatus] = useState(false);
-  const [aState, setAppState] = useState(AppState.currentState);
+  const [title, setTitle] = useState('');
 
   useEffect(() => {
-    // const appStateListener = AppState.addEventListener(
-    //   'change',
-    //   nextAppState => {
-    //     console.log('Next AppState is: ', nextAppState);
-    //     setAppState(nextAppState);
-    //   },
-    // );
-    // return () => {
-    //   appStateListener?.remove();
+    const appStateListener = AppState.addEventListener(
+      'change',
+      nextAppState => {
+        console.log('Next AppState is: ', nextAppState);
+        setAppState(nextAppState);
+      },
+    );
 
+    getAlarm();
+  }, [isVisible]);
+
+
+
+  if (aState !== 'active') {
+    console.log('ooooook');
+    // let temp = [];
+    let hours = new Date().getHours();
+    let minutes = new Date().getMinutes();
+    let ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+    hours = hours < 10 ? '0' + hours : hours;
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    let currentTime = hours + ':' + minutes + ' ' + ampm;
+    firestore()
+      .collection('Alarms')
+      .where('email', '==', email)
+      .get()
+      .then(snapshot => {
+        snapshot.docs.forEach(item => {
+          // temp.push(item.data());
+          let fireDate = item.data().fire_date;
+          let alarmTime = item.data().time;
+
+          if (currentTime == alarmTime) {
+            console.log('-----------------<><>',true);
+            ReactNativeAN.sendNotification(item.data());
+
+            // setTimeout(() => {
+            //   Vibration.cancel();
+            // }, 3000);
+          }
+        });
+
+        // console.log(temp);
+      });
+  }
+
+  const getAlarm = () => {
     let temp = [];
+    let hours = new Date().getHours();
+    let minutes = new Date().getMinutes();
+    let ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+    hours = hours < 10 ? '0' + hours : hours;
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    let currentTime = hours + ':' + minutes + ' ' + ampm;
     firestore()
       .collection('Alarms')
       .where('email', '==', email)
@@ -45,27 +96,22 @@ export default function Dashboard({navigation}) {
         snapshot.docs.forEach(item => {
           temp.push(item.data());
           let fireDate = item.data().fire_date;
-          let duration = Moment.duration(Moment().diff(fireDate));
-          let seconds = duration.asMinutes();
-          let res = Math.floor(seconds / 60000);
-          console.log('res', res);
-          setTimeout(() => {
+          let alarmTime = item.data().time;
+
+          if (currentTime == alarmTime) {
+            console.log(true);
             ReactNativeAN.sendNotification(item.data());
-            setalarmStatus(true);
-            Vibration.cancel();
-          }, res);
+
+            setTimeout(() => {
+              Vibration.cancel();
+            }, 3000);
+          }
         });
-        // console.log("alarmStatus",alarmStatus);
-        // if(alarmStatus){
-        //   firestore().collection("Alarms").update({
-        //     alarmFired: true
-        //   })
-        // }
+
         setAlarm(temp);
       });
-  }, []);
+  };
   const removeAlarm = (item, index) => {
-    // firestore().collection("Alarm")
     console.log(index);
     let temp = [...alarm];
     temp.splice(index, 1);
@@ -90,50 +136,50 @@ export default function Dashboard({navigation}) {
         </>
       ) : (
         <View>
-        <ScrollView>
-          <View>
-            <View style={styles.listView}>
-              {alarm.map((item, index) => {
-                return (
-                  <>
-                    <ListItem key={index}>
-                      <ListItem.Content>
-                        <ListItem.Title style={styles.title}>
-                          {item.title}
-                        </ListItem.Title>
-                        <ListItem.Subtitle style={styles.time}>
-                          {item.time}
-                        </ListItem.Subtitle>
+          <ScrollView>
+            <View>
+              <View style={styles.listView}>
+                {alarm.map((item, index) => {
+                  return (
+                    <Fragment key={index}>
+                      <ListItem>
+                        <ListItem.Content>
+                          <ListItem.Title style={styles.title}>
+                            {item.title}
+                          </ListItem.Title>
+                          <ListItem.Subtitle style={styles.time}>
+                            {item.time}
+                          </ListItem.Subtitle>
 
-                        <ListItem.Subtitle>{item.date}</ListItem.Subtitle>
-                        <ListItem.Subtitle style={styles.message}>
-                          {item.message}
-                        </ListItem.Subtitle>
-                      </ListItem.Content>
-                      <Button
-                        title="Remove"
-                        color={'red'}
-                        onPress={() => removeAlarm(item, index)}
-                      />
-                    </ListItem>
-                    <Divider />
-                  </>
-                );
-              })}
+                          <ListItem.Subtitle>{item.date}</ListItem.Subtitle>
+                          <ListItem.Subtitle style={styles.message}>
+                            {item.message}
+                          </ListItem.Subtitle>
+                        </ListItem.Content>
+                        <Button
+                          title="Remove"
+                          color={'red'}
+                          onPress={() => removeAlarm(item, index)}
+                        />
+                      </ListItem>
+                      <Divider />
+                    </Fragment>
+                  );
+                })}
+              </View>
             </View>
+          </ScrollView>
+          <View style={styles.addIconData}>
+            <TouchableOpacity onPress={() => navigation.navigate('TimePicker')}>
+              <Icon name="pluscircle" color={'#122e6e'} size={60} />
+            </TouchableOpacity>
           </View>
-        </ScrollView>
-        <View style={styles.addIconData}>
-        <TouchableOpacity onPress={() => navigation.navigate('TimePicker')}>
-          <Icon name="pluscircle" color={'#122e6e'} size={60} />
-        </TouchableOpacity>
-      </View>
         </View>
       )}
-      
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   text: {
     fontSize: 30,

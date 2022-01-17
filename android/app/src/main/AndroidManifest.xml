@@ -48,5 +48,6 @@
                 <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" /> -->
         </intent-filter>
       </activity>
+      <service android:name="com.asterinet.react.bgactions.RNBackgroundActionsTask" />
     </application>
 </manifest>

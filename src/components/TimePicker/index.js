@@ -23,6 +23,7 @@ export default function TimePicker({navigation}) {
   const email = useSelector(state => state.email);
   const userName = useSelector(state => state.name);
 
+
   const showDateTimePicker = () => {
     if (title !== '' && description !== '') {
       setIsDatePickerVisible(true);
@@ -40,10 +41,12 @@ export default function TimePicker({navigation}) {
     let length = 5;
     let result = '';
     let characters = '0123456789';
-    for (let i = 0; i < characters.length; i++) {
+    let charactersLength = characters.length
+    
+    for (let i = 0; i < length; i++) {
       result += characters.charAt(
-        Math.floor(Math.random() + characters.length),
-      );
+        Math.floor(Math.random() * charactersLength),
+        );
     }
     return result;
   };
@@ -74,15 +77,7 @@ export default function TimePicker({navigation}) {
       date: date,
       time: time,
     };
-    // ReactNativeAN.scheduleAlarm(alarmNotifData)
-  
-    // ReactNativeAN.stopAlarmSound();
-    // const alarm = await ReactNativeAN.scheduleAlarm({
-    //   ...alarmNotifData,
-    //   fire_date: fireDate,
-    // });
-    // const allAlarms = await ReactNativeAN.getScheduledAlarms();
-    // console.log(allAlarms);
+   
     firestore()
       .collection('Alarms')
       .add(alarmNotifData)
